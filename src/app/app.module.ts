@@ -4,14 +4,16 @@ import { NgModule } from '@angular/core';
 //import { AppRoutingModule } from './app-routing.module';
 //import { AppComponent } from './app.component';
 import { ProductComponent } from "./component";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PaAttrDirective } from "./attr.directive";
 
 @NgModule({
-  declarations: [ProductComponent],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
+  declarations: [ProductComponent, PaAttrDirective],
   providers: [],
   bootstrap: [ProductComponent]
 })

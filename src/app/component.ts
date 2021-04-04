@@ -69,4 +69,27 @@ export class ProductComponent {
     getSelected(product: Product): boolean {
         return product.name == this.selectedProduct;
     }
+
+    newProduct: Product = new Product();
+
+    get jsonProduct() {
+        return JSON.stringify(this.newProduct);
+    }
+
+    addProduct(p: Product) {
+        console.log("New Product: " + this.jsonProduct);
+    }
+
+    addProduct1(p: Product) {
+        this.model.saveProduct(p);
+    }
+
+    formSubmitted: boolean = false;
+
+    submitForm() {
+        this.addProduct1(this.newProduct);
+    }
+
+    showTable: boolean = false;
 }
+

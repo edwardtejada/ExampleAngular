@@ -2,7 +2,7 @@
     There are {{model.getProducts().length}} products in the model
 </div>
 
-<!--One-Way Data Bindings-->EEEA
+<!--One-Way Data Bindings-->
 <!--De esta forma podemos pasar el nombre de la clase de forma dinamica,
 que seria class="bg-warning"-->
 <div [ngClass]="getClasses(1)" >
@@ -53,6 +53,16 @@ que seria value="Kayak"-->
         There are {{getProductCount()}} products.
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+<!--Chapter 13-->
 
 <!--Using the ngIf Directive-->
 <div *ngIf="getProductCount() > 4" class="bg-info p-2 mt-1">
@@ -188,6 +198,16 @@ This boolean value returns true if the current object is the last one in the dat
 </ng-template>
 
 
+
+
+
+
+
+
+
+
+<!--Chapter 14-->
+
 <!--Using the Event Binding-->
 <div class="m-2">
     <div class="bg-info text-white p-2">
@@ -214,7 +234,8 @@ This boolean value returns true if the current object is the last one in the dat
             [value]="selectedProduct || ''" />
     </div>
     <!--Using the ngModel Directive-->
-    <!--Bindings can be combined to create a two-way flow of data for a single element, allowing the HTML
+    <!--ngModel directive is used to simplify two-way bindings (con el ngModel me evitor hacer un (input)="selectedProduct=$event.target.value" y [value]="selectedProduct || ''"). 
+        Bindings can be combined to create a two-way flow of data for a single element, allowing the HTML
         document to respond when the application model changes and also allowing the application to respond
         when the element emits an event.-->
     <div class="form-group">
@@ -223,7 +244,219 @@ This boolean value returns true if the current object is the last one in the dat
     </div>
 </div>
 
+<!--Working with Forms-->
+<div class="m-2">
+    <div class="bg-info text-white mb-2 p-2">Model Data: {{jsonProduct}}</div>
+    
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" [(ngModel)]="newProduct.name" />
+    </div>
+    <div class="form-group">
+        <label>Category</label>
+        <input class="form-control" [(ngModel)]="newProduct.category" />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" [(ngModel)]="newProduct.price" />
+    </div>
+    <button class="btn btn-primary" (click)="addProduct(newProduct)">Create</button>
+</div>
+
+<!--Validation Attributes-->
+<!-- 
+required 
+This attribute is used to specify a value that must be provided.
+
+minlength 
+This attribute is used to specify a minimum number of characters.
+
+maxlength 
+This attribute is used to specify a maximum number of characters. This type of validation
+cannot be applied directly to form elements because it conflicts with the HTML5 attribute
+of the same name. It can be used with model-based forms, which are described later in the
+chapter.
+
+pattern 
+This attribute is used to specify a regular expression that the value provided by the user must match.
+-->
+<div class="m-2">
+    <div class="bg-info p-2 mb-2">Model Data: {{jsonProduct}}</div>
+    
+    <form novalidate (ngSubmit)="addProduct(newProduct)">
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control"
+                    name="name"
+                    [(ngModel)]="newProduct.name"
+                    required
+                    minlength="5"
+                    pattern="^[A-Za-z ]+$" />
+        </div>  
+        <button class="btn btn-primary" type="submit">
+            Create
+        </button>
+    </form>
+</div>
+
+<!--Styling Elements Using Validation Classes-->
+<!--
+Once you have saved the template changes in Listing 14-13 and the browser has reloaded the HTML, rightclick
+the input element in the browser window and select Inspect or Inspect Element from the pop-up
+window. The browser will display the HTML representation of the element in the Developer Tools window,
+and you will see that the input element has been added to three classes, like this:
+...
+<input class="form-control ng-pristine ng-invalid ng-touched" minlength="5"
+name="name" pattern="^[A-Za-z ]+$" required="" ng-reflect-name="name">
+...
+-->
+<style>
+    input.ng-dirty.ng-invalid { border: 2px solid #ff0000 }
+    input.ng-dirty.ng-valid { border: 2px solid #6bc502 }
+</style>
+
+<!--
+  Using colors to provide validation feedback tells the user that something is wrong but doesn’t provide any
+indication of what the user should do about it. The ngModel directive provides access to the validation
+status of the elements it is applied to, which can be used to display guidance to the user. Listing 14-15 adds
+validation messages for each of the attributes applied to the input element using the support provided by
+the ngModel directive. 
+
+To get validation name: #name="ngModel"
+ -->
+<div class="m-2">
+    <div class="bg-info p-2 mb-2">Model Data: {{jsonProduct}}</div>
+    
+    <form novalidate (ngSubmit)="addProduct(newProduct)">
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control"
+                    name="name"
+                    [(ngModel)]="newProduct.name"
+                    #name="ngModel" 
+                    required
+                    minlength="5"
+                    pattern="^[A-Za-z ]+$" />
+            <ul class="text-danger list-unstyled" *ngIf="name.dirty && name.invalid">
+                <li *ngIf="name.errors.required">
+                    You must enter a product name
+                </li>
+                <li *ngIf="name.errors.pattern">
+                    Product names can only contain letters and spaces
+                </li>
+                <li *ngIf="name.errors.minlength">
+                    Product names must be at least
+                    {{name.errors.minlength.requiredLength}} characters
+                </li>
+            </ul>
+        </div>  
+        <button class="btn btn-primary" type="submit">
+            Create
+        </button>
+    </form>
+</div>
+
+<!--Validation Object Properties-->
+<!--
+path 
+This property returns the name of the element.
+
+valid 
+This property returns true if the element’s contents are valid and false otherwise.
+
+invalid 
+This property returns true if the element’s contents are invalid and false otherwise.
+
+pristine 
+This property returns true if the element’s contents have not been changed.
+
+dirty 
+This property returns true if the element’s contents have been changed.
+
+touched 
+This property returns true if the user has visited the element.
+
+untouched 
+This property returns true if the user has not visited the element.
+
+errors 
+This property returns an object whose properties correspond to each attribute for which
+there is a validation error.
+
+value 
+This property returns the value of the element, which is used when defining custom
+validation rules, as described in the “Creating Custom Form Validators” section.    
+ -->
 
 
 
 
+
+
+
+ <!--Chapter 15-->
+ <!--Simple Attribute Directive-->
+ <div class="row m-2">
+    <div class="col-6">
+        <form class="m-2" novalidate (ngSubmit)="submitForm()">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="name" [(ngModel)]="newProduct.name" />
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <input class="form-control" name="category"
+                    [(ngModel)]="newProduct.category" />
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input class="form-control" name="price" [(ngModel)]="newProduct.price" />
+            </div>
+            <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+    </div>
+
+    <div class="col-6">
+        <table class="table table-sm table-bordered table-striped">
+            <tr><th></th><th>Name</th><th>Category</th><th>Price</th></tr>
+            <tr *ngFor="let item of getProducts(); let i = index"
+                [pa-attr]="getProducts().length < 6 ? 'bg-success' : 'bg-warning'"
+                [pa-product]="item" (pa-category)="newProduct.category = $event">
+                <td>{{i + 1}}</td>
+                <td>{{item.name}}</td>
+                <td [pa-attr]="item.category == 'Soccer' ? 'bg-info' : null">
+                    {{item.category}}
+                </td>
+                <td [pa-attr]="'bg-info'">{{item.price}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+ <!--Chapter 16-->
+ <!--Creating Structural Directives-->
+ <div class="m-2">
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" [(ngModel)]="showTable" />
+            Show Table
+        </label>
+    </div>
+     <ng-template [paIf]="showTable">
+        <table class="table table-sm table-bordered table-striped">
+            <tr><th></th><th>Name</th><th>Category</th><th>Price</th></tr>
+            <tr *ngFor="let item of getProducts(); let i = index"
+                [pa-attr]="getProducts().length < 6 ? 'bg-success' : 'bg-warning'"
+                [pa-product]="item" (pa-category)="newProduct.category = $event">
+                <td>{{i + 1}}</td>
+                <td>{{item.name}}</td>
+                <td [pa-attr]="item.category == 'Soccer' ? 'bg-info' : null">
+                    {{item.category}}
+                </td>
+                <td [pa-attr]="'bg-info'">{{item.price}}</td>
+            </tr>
+        </table>
+    </ng-template>
+ </div>
